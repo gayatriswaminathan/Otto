@@ -1,4 +1,13 @@
+# dependencies / build / local config (never commit these)
 node_modules/
 .dev.vars
 .wrangler/
 dist/
+
+# generated output + local noise (don't commit these either)
+rollup.html
+rollup-*.html
+*.local.html
+cli_err.txt
+*.log
+.DS_Store

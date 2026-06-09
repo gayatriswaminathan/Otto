@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+# Otto pre-commit gate (Kiro-style agent hook, run locally before the commit lands).
+# Runs the SAME checks CI runs, so drift is caught before it ever reaches main.
+# Install once:  git config core.hooksPath scripts/git-hooks  &&  chmod +x scripts/git-hooks/*
+set -e
+
+echo "Otto pre-commit: running gates..."
+node eval/eval.mjs
+node scripts/check-brand.mjs
+# Dependency + readiness eval — uncomment once you've run it locally and it's green:
+# node eval/eval_deps.mjs
+echo "Otto pre-commit: gates passed."

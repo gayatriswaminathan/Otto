@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+# Otto commit-msg gate: every commit must name a KAN ticket, so the code stays
+# traceable to the backlog (which change came from which piece of work).
+# e.g. a message like:  "KAN-24 sharpen the weekly status prose"
+msg_file="$1"
+if ! grep -Eiq 'KAN-[0-9]+' "$msg_file"; then
+  echo "Commit rejected: your message must reference a KAN ticket (for example, KAN-24)." >&2
+  echo "Why: it keeps every change traceable to the backlog." >&2
+  exit 1
+fi
