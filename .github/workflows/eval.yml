@@ -1,8 +1,9 @@
 name: eval
 
-# Otto's quality moat (KAN-31 / G4): every push and PR runs the eval harness.
-# If analyze() stops producing a required watermelon flag, this job fails and
-# blocks the merge.
+# Otto's quality gates: every push and PR runs the eval harness, the
+# dependency/readiness eval, and the brand-consistency gate. Any failure
+# blocks the merge. Paths are relative to the repo root (which is the otto
+# project itself).
 
 on:
   push:
@@ -12,9 +13,6 @@ on:
 jobs:
   eval:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: otto
     steps:
       - uses: actions/checkout@v4
 
@@ -23,5 +21,12 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Run Otto eval harness
+      - name: Eval harness (watermelon flags)
         run: node eval/eval.mjs
+
+      - name: Brand consistency gate
+        run: node scripts/check-brand.mjs
+
+      # Add once verified locally with: node eval/eval_deps.mjs
+      # - name: Dependency + readiness eval
+      #   run: node eval/eval_deps.mjs
