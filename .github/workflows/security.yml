@@ -1,0 +1,29 @@
+name: Security Review
+
+# AI security review of code changes, using Anthropic's official action.
+# Runs on every pull request: Claude reads the diff and comments any
+# vulnerabilities it finds (injection, hardcoded secrets, auth flaws, XSS,
+# weak crypto, etc.) right on the changed lines.
+# Setup: add a repo secret named CLAUDE_API_KEY (Settings -> Secrets and
+# variables -> Actions). The key must be enabled for Claude API + Claude Code.
+
+permissions:
+  pull-requests: write   # needed to comment findings on the PR
+  contents: read
+
+on:
+  pull_request:
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 2
+
+      - uses: anthropics/claude-code-security-review@main
+        with:
+          comment-pr: true
+          claude-api-key: ${{ secrets.CLAUDE_API_KEY }}
