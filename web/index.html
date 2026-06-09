@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Otto: The Autonomous TPM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Geist:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#faf6ea;            /* warm cream */
+    --paper:#ffffff;
+    --ink:#15140f;
+    --muted:#6f6a5c;
+    --line:#ece4d2;
+    --yellow:#ffcb2d;        /* sunbeam yellow */
+    --yellow-deep:#e7ad00;   /* hover / borders */
+    --yellow-soft:#fff3cf;   /* tinted fills */
+    --on-yellow:#1a1610;     /* text on yellow */
+    --panel:#15140f;         /* dark "kitchen" band */
+    --panel-2:#211f17;       /* dark cards */
+    --panel-line:#34301f;
+    --cream-dim:#cfc8b4;
+    --good:#1f8a52;
+    --warn:#c98a16;
+    --radius:18px;
+    --shadow:0 1px 2px rgba(20,18,15,.04),0 14px 38px rgba(20,18,15,.07);
+    --maxw:1080px;
+    font-synthesis:none;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Geist","Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    line-height:1.55;-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,h4,h5{font-family:"Geist","Inter",sans-serif;letter-spacing:-.025em}
+  h1,h2,.brand,.shift .quote{font-family:"Fraunces","Geist",serif;letter-spacing:-.01em;font-optical-sizing:auto}
+  .hero h1{font-weight:600}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  a{color:inherit;text-decoration:none}
+  .btn{display:inline-flex;align-items:center;gap:8px;background:var(--yellow);color:var(--on-yellow);font-weight:700;font-size:15px;
+    padding:13px 22px;border-radius:999px;border:0;cursor:pointer;transition:transform .15s ease,background .15s ease,box-shadow .15s ease;white-space:nowrap;
+    box-shadow:0 8px 22px rgba(255,203,45,.35);}
+  .btn:hover{background:var(--yellow-deep);transform:translateY(-1px)}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+  .btn.ghost:hover{background:#fff;border-color:var(--yellow-deep)}
+  .btn.on-dark.ghost{color:#fff;border-color:var(--panel-line)}
+  .btn.on-dark.ghost:hover{background:rgba(255,255,255,.06);border-color:var(--yellow)}
+  .eyebrow{font-size:12.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--yellow-deep);}
+  .pill{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;background:var(--yellow-soft);color:#7a5c00;
+    padding:7px 14px;border-radius:999px;border:1px solid #f5e0a0;}
+
+  /* logo = little sun */
+  .logo{width:28px;height:28px;border-radius:50%;background:radial-gradient(circle at 50% 45%,#ffd84d,#ffb800);position:relative;
+    box-shadow:0 0 0 4px rgba(255,203,45,.22);flex:0 0 auto}
+  .logo::after{content:"";position:absolute;inset:7px;border-radius:50%;background:#fff;opacity:.92}
+  .logo::before{content:"";position:absolute;inset:11px;border-radius:50%;background:radial-gradient(circle,#ffb800,#ff9e00)}
+
+  nav{position:sticky;top:0;z-index:50;background:rgba(250,246,234,.84);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .nav-row{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.02em;font-size:19px}
+  .nav-links{display:flex;gap:26px;font-size:14.5px;color:var(--muted);font-weight:600}
+  .nav-links a:hover{color:var(--ink)}
+  @media(max-width:760px){.nav-links{display:none}}
+
+  .hero{padding:88px 0 60px;text-align:center;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;top:-180px;left:50%;transform:translateX(-50%);width:760px;height:420px;
+    background:radial-gradient(ellipse at center,rgba(255,203,45,.40),rgba(255,203,45,0) 65%);pointer-events:none}
+  .hero>.wrap{position:relative}
+  .hero h1{font-size:clamp(40px,6.4vw,72px);line-height:1.02;letter-spacing:-.03em;font-weight:850;margin:22px auto 0;max-width:15ch;}
+  .hero h1 .hl{background:linear-gradient(180deg,transparent 62%,var(--yellow) 62%);padding:0 .06em;border-radius:3px}
+  .hero p.sub{font-size:clamp(17px,2.2vw,21px);color:var(--muted);max-width:62ch;margin:22px auto 0}
+  .hero .cta{display:flex;gap:12px;justify-content:center;margin-top:32px;flex-wrap:wrap}
+  .hero .trust{margin-top:22px;font-size:13px;color:var(--muted)}
+
+  section{padding:66px 0}
+  .section-head{max-width:64ch}
+  .section-head.center{margin:0 auto;text-align:center}
+  h2{font-size:clamp(27px,3.7vw,42px);line-height:1.06;letter-spacing:-.025em;font-weight:850;margin:14px 0 0}
+  .lede{font-size:17.5px;color:var(--muted);margin-top:16px}
+
+  .shift{background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .shift .quote{font-size:clamp(22px,3vw,31px);line-height:1.28;font-weight:800;letter-spacing:-.02em;max-width:24ch;margin:0}
+  .shift .quote b{background:linear-gradient(180deg,transparent 60%,var(--yellow) 60%)}
+  .shift-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+  @media(max-width:820px){.shift-grid{grid-template-columns:1fr;gap:28px}}
+
+  /* DARK "kitchen" sample band */
+  .dark{background:var(--panel);color:#f3eedd;position:relative;overflow:hidden;border-top:1px solid var(--line)}
+  .dark::before{content:"";position:absolute;top:-120px;right:-80px;width:520px;height:420px;
+    background:radial-gradient(ellipse at center,rgba(255,203,45,.22),rgba(255,203,45,0) 60%);pointer-events:none}
+  .dark .eyebrow{color:var(--yellow)}
+  .dark h2{color:#fff}
+  .dark .lede{color:var(--cream-dim)}
+  .kicker{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--yellow);border:1px solid var(--panel-line);padding:6px 12px;border-radius:999px;background:rgba(255,203,45,.06)}
+  .kicker .d{width:7px;height:7px;border-radius:50%;background:var(--yellow);box-shadow:0 0 10px var(--yellow)}
+  .artifact{display:grid;grid-template-columns:.95fr 1.05fr;gap:42px;align-items:center;margin-top:30px}
+  @media(max-width:860px){.artifact{grid-template-columns:1fr;gap:28px}}
+  .rollup{background:#fffdf6;border:1px solid #efe7d2;border-radius:20px;box-shadow:0 24px 60px rgba(0,0,0,.45);overflow:hidden;color:var(--ink)}
+  .rollup .bar{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid var(--line);background:#fff}
+  .rollup .bar .l{display:flex;align-items:center;gap:9px;font-weight:800;font-size:13.5px}
+  .rollup .bar .tag{font-size:11px;font-weight:700;color:var(--muted)}
+  .rollup .bar .ex-tag{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#7a5c00;background:var(--yellow-soft);border:1px solid #f3df9e;padding:4px 10px;border-radius:999px}
+  .rollup .body{padding:18px}
+  .rollup h5{margin:0 0 2px;font-size:15px;letter-spacing:-.01em}
+  .rollup .meta{font-size:12px;color:var(--muted);margin-bottom:14px}
+  .statline{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px dashed var(--line);font-size:13.5px}
+  .statline:first-of-type{border-top:0}
+  .badge{font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;flex:0 0 auto}
+  .badge.green{background:#e6f4ec;color:var(--good)}
+  .badge.amber{background:#fbf0d8;color:var(--warn)}
+  .badge.red{background:#fdeae6;color:#c0341d}
+  .statline .txt small{color:var(--muted);display:block;font-size:12px;margin-top:1px}
+  .rollup .foot{margin-top:14px;padding:12px 14px;background:var(--yellow-soft);border:1px solid #f3df9e;border-radius:12px;font-size:12.5px;color:#7a5c00;font-weight:700}
+  .dark .artifact .copy .lede{color:#e9e2cf}
+  .dark .artifact .copy em{color:var(--yellow);font-style:normal;font-weight:700}
+
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:40px}
+  @media(max-width:880px){.cards{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.cards{grid-template-columns:1fr}}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);position:relative;}
+  .card .ic{width:40px;height:40px;border-radius:11px;background:var(--yellow-soft);display:grid;place-items:center;font-size:19px;margin-bottom:14px}
+  .card h3{margin:0 0 6px;font-size:17.5px;letter-spacing:-.01em}
+  .card p{margin:0;font-size:14.5px;color:var(--muted)}
+  .card .live{position:absolute;top:18px;right:18px;font-size:11px;font-weight:800;color:var(--good);display:flex;align-items:center;gap:6px}
+  .card .live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 0 3px rgba(31,138,82,.16)}
+
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:36px}
+  @media(max-width:820px){.steps{grid-template-columns:1fr 1fr}}
+  @media(max-width:480px){.steps{grid-template-columns:1fr}}
+  .step{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+  .step .n{font-size:13px;font-weight:800;color:var(--yellow-deep);letter-spacing:.06em}
+  .step h4{margin:8px 0 6px;font-size:16px}
+  .step p{margin:0;font-size:14px;color:var(--muted)}
+
+  .who{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:36px}
+  @media(max-width:760px){.who{grid-template-columns:1fr}}
+  .who .box{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+  .who .box.hl{background:linear-gradient(180deg,#fffdf4,#fff8e2);border-color:#f3df9e}
+  .who h4{margin:0 0 12px;font-size:16px}
+  .who ul{margin:0;padding-left:18px;color:var(--muted);font-size:14.5px}
+  .who li{margin:7px 0}
+
+  .price-wrap{background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:38px}
+  @media(max-width:820px){.tiers{grid-template-columns:1fr;max-width:460px;margin-left:auto;margin-right:auto}}
+  .tier{border:1px solid var(--line);border-radius:20px;padding:28px;background:var(--bg);position:relative}
+  .tier.feature{border-color:var(--yellow-deep);box-shadow:0 16px 44px rgba(255,203,45,.28);background:#fff}
+  .tier .tag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--yellow);color:var(--on-yellow);font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:999px}
+  .tier .kind{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .tier h3{margin:6px 0 0;font-size:19px}
+  .tier .amt{font-size:32px;font-weight:850;letter-spacing:-.02em;margin:10px 0 2px}
+  .tier .amt span{font-size:15px;font-weight:600;color:var(--muted)}
+  .tier .desc{font-size:14px;color:var(--muted);min-height:44px}
+  .tier ul{list-style:none;margin:14px 0 0;padding:0}
+  .tier li{font-size:14px;padding:8px 0;display:flex;gap:9px;align-items:flex-start;border-top:1px solid var(--line)}
+  .tier li::before{content:"✓";color:var(--yellow-deep);font-weight:900}
+  .tier .btn{width:100%;justify-content:center;margin-top:22px}
+
+  .final{text-align:center;padding:92px 0;position:relative;overflow:hidden}
+  .final::before{content:"";position:absolute;bottom:-220px;left:50%;transform:translateX(-50%);width:820px;height:480px;
+    background:radial-gradient(ellipse at center,rgba(255,203,45,.34),rgba(255,203,45,0) 65%);pointer-events:none}
+  .final>.wrap{position:relative}
+  .final h2{max-width:20ch;margin-inline:auto}
+  .final .btn{margin-top:26px}
+
+  footer{border-top:1px solid var(--line);padding:34px 0;color:var(--muted);font-size:13.5px}
+  .foot-row{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+  .note{font-size:13px;color:var(--muted);margin-top:10px}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-row">
+    <div class="brand"><span class="logo"></span> Otto</div>
+    <div class="nav-links">
+      <a href="#shift">The shift</a>
+      <a href="#sample">Sample</a>
+      <a href="#runs">What it runs</a>
+      <a href="#pricing">Pricing</a>
+      <a href="/app">Try it live</a>
+      <a href="/architecture.html">Architecture</a>
+    </div>
+    <a class="btn" href="mailto:otto.tpm@gmail.com?subject=Otto%20booking%20request">Book a call</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap">
+    <span class="pill">☀ Meet Otto · the autonomous TPM</span>
+    <h1>Hire the always-on <span class="hl">autonomous TPM</span></h1>
+    <p class="sub">Otto is an autonomous technical program manager. It runs launch readiness, status rollups, and risk &amp; dependency tracking across your programs, around the clock, and escalates the calls that need a human. Senior-TPM judgment, at software scale.</p>
+    <div class="cta">
+      <a class="btn" href="mailto:otto.tpm@gmail.com?subject=Otto%20booking%20request">Book a call</a>
+      <a class="btn ghost" href="/rollup" target="_blank" rel="noopener">See a real rollup →</a>
+    </div>
+    <div class="trust">Runs on top of your Jira / Linear, Slack, and docs. Not a dashboard. Not a contractor. An autonomous TPM.</div>
+  </div>
+</header>
+
+<!-- THE SHIFT -->
+<section class="shift" id="shift">
+  <div class="wrap shift-grid">
+    <div>
+      <span class="eyebrow">The shift</span>
+      <p class="quote">Programs don't slip on engineering. They slip on <b>coordination.</b></p>
+    </div>
+    <div>
+      <p class="lede" style="margin-top:0">For a decade, technical program management has meant a senior human chasing status, reconciling dependencies, and rebuilding the same launch checklist by hand, every week, for every program. It doesn't scale, and the programs that can't get a TPM go uncovered.</p>
+      <p class="lede">Otto does that work autonomously. It reads your trackers and channels, keeps a live model of every program, catches the slip before the standup, and writes the update for you, escalating only the judgment calls a TPM would take to the owner anyway.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SAMPLE ARTIFACT (dark kitchen band) -->
+<section class="dark" id="sample">
+  <div class="wrap">
+    <div class="section-head center">
+      <span class="kicker"><span class="d"></span> Mission control · always on</span>
+      <h2 style="margin-top:16px">This is what lands in your inbox every Monday</h2>
+      <p class="lede">No dashboard to check. Otto writes the rollup your best TPM would have written, and flags what's at risk before you ask.</p>
+    </div>
+    <div class="artifact">
+      <div class="rollup">
+        <div class="bar">
+          <span class="l"><span class="logo" style="width:18px;height:18px"></span> Otto · Weekly Program Rollup</span>
+          <span class="ex-tag">Example output</span>
+        </div>
+        <div class="body">
+          <h5>Payments Platform v2 · Launch readiness: 78%</h5>
+          <div class="meta">WK 23 · auto-generated · 3 workstreams · 9 owners · target ship Jun 26</div>
+          <div class="statline"><span class="badge green">On track</span><span class="txt">Checkout migration <small>QA gate passed · 0 P0 open</small></span></div>
+          <div class="statline"><span class="badge amber">At risk</span><span class="txt">Ledger reconciliation <small>blocked on Data team API, 4 days idle</small></span></div>
+          <div class="statline"><span class="badge red">Slipping</span><span class="txt">Fraud rules rollout <small>dependency on Risk eng; owner OOO, no backup</small></span></div>
+          <div class="foot">⚑ Needs your call: Fraud rules will miss the gate unless Risk eng re-prioritizes this week. Escalation drafted, review &amp; send?</div>
+        </div>
+      </div>
+      <div class="copy">
+        <p class="lede" style="margin-top:0">Every line is traced to the source: the Jira ticket, the Slack thread, the doc. The amber and red items were surfaced by Otto <em>before</em> any human noticed they'd stalled.</p>
+        <p class="lede">The footer is the whole point: Otto does the assembly autonomously, and surfaces the one political call that needs a decision, with the escalation already written. You make the call; Otto did everything up to it.</p>
+        <a class="btn on-dark ghost" href="/rollup" target="_blank" rel="noopener" style="margin-top:8px">See it on a real board →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT IT RUNS -->
+<section id="runs">
+  <div class="wrap">
+    <div class="section-head center">
+      <span class="eyebrow">Coverage</span>
+      <h2>Otto runs every part of the TPM function</h2>
+      <p class="lede">Each component runs independently and in parallel, so nothing waits on a human to get to it.</p>
+    </div>
+    <div class="cards">
+      <div class="card"><span class="live">Live</span><div class="ic">🚀</div><h3>Launch readiness</h3><p>Maintains a live readiness scorecard per launch: gates, owners, blockers, and gives you go / no-go with the evidence.</p></div>
+      <div class="card"><span class="live">Live</span><div class="ic">📊</div><h3>Status rollups</h3><p>Writes the weekly update for every audience: exec brief, eng detail, stakeholder note, from the source data, on schedule.</p></div>
+      <div class="card"><span class="live">Live</span><div class="ic">🔗</div><h3>Risk &amp; dependencies</h3><p>Tracks cross-team dependencies and surfaces the slip before it cascades, with the chain mapped and the owner tagged.</p></div>
+      <div class="card"><div class="ic">🗂️</div><h3>Backlog hygiene</h3><p>Keeps tickets linked, sized, and unblocked; pings owners on stale or dependency-locked work.</p></div>
+      <div class="card"><div class="ic">🤝</div><h3>Stakeholder comms</h3><p>Drafts the escalation, the launch note, the RAID update, in your voice, ready to send.</p></div>
+      <div class="card"><div class="ic">🧭</div><h3>Program memory</h3><p>A stateful knowledge graph of every decision, owner, and dependency. Context never resets between weeks.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section id="how" style="background:var(--paper);border-top:1px solid var(--line)">
+  <div class="wrap">
+    <div class="section-head center">
+      <span class="eyebrow">How it works</span>
+      <h2>Live in days, not quarters</h2>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="n">STEP 01</div><h4>Connect</h4><p>Read-only access to your trackers, channels, and docs. Nothing leaves your stack; no training on your data.</p></div>
+      <div class="step"><div class="n">STEP 02</div><h4>Index</h4><p>Otto builds a live model of every program, owner, and dependency, and maps your update voice.</p></div>
+      <div class="step"><div class="n">STEP 03</div><h4>Run</h4><p>Readiness, rollups, and risk tracking run on schedule and on-demand, autonomously.</p></div>
+      <div class="step"><div class="n">STEP 04</div><h4>Escalate</h4><p>The judgment calls, the political ones, come to you, pre-drafted. You decide; Otto did the rest.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO -->
+<section>
+  <div class="wrap">
+    <div class="section-head center">
+      <span class="eyebrow">Who it's for</span>
+      <h2>For teams shipping complex, cross-team programs</h2>
+    </div>
+    <div class="who">
+      <div class="box">
+        <h4>You're a fit if…</h4>
+        <ul>
+          <li>You run multi-team launches and status work eats your senior people.</li>
+          <li>Your TPM coverage can't stretch to every program that needs it.</li>
+          <li>Readiness and dependencies live in someone's head, not a system.</li>
+          <li>Leadership wants a reliable weekly truth, not a Friday scramble.</li>
+        </ul>
+      </div>
+      <div class="box hl">
+        <h4>What you get back</h4>
+        <ul>
+          <li>A standing weekly rollup, already written before the meeting.</li>
+          <li>Launch readiness you can trust: gated, evidenced, owner-tagged.</li>
+          <li>Risks surfaced early instead of explained in the post-mortem.</li>
+          <li>Coverage you can switch on in days and cancel anytime, no req, no ramp.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="price-wrap" id="pricing">
+  <div class="wrap">
+    <div class="section-head center">
+      <span class="eyebrow">Get started</span>
+      <h2>Start with one program. Two ways in.</h2>
+      <p class="lede">Prove it on a single launch, or put Otto on your programs ongoing. Priced against a TPM hire, not a software seat.</p>
+    </div>
+    <div class="tiers">
+      <div class="tier">
+        <div class="kind">One-time</div>
+        <h3>Launch Readiness Audit</h3>
+        <div class="amt">$6k<span> · 2 weeks</span></div>
+        <div class="desc">One program, end to end. The fastest way to see Otto on your real data.</div>
+        <ul>
+          <li>Full readiness assessment + scorecard</li>
+          <li>Risk &amp; dependency map</li>
+          <li>Your first weekly rollup, delivered</li>
+          <li>Setup + indexing included</li>
+          <li>Credited toward your first month if you continue</li>
+        </ul>
+        <a class="btn ghost" href="mailto:otto.tpm@gmail.com?subject=Otto%20booking%20request">Start an audit</a>
+      </div>
+      <div class="tier feature">
+        <span class="tag">Most teams start here</span>
+        <div class="kind">Ongoing</div>
+        <h3>Program</h3>
+        <div class="amt">$8k<span>/mo</span></div>
+        <div class="desc">Up to 3 programs, run continuously with stakeholder comms.</div>
+        <ul>
+          <li>Up to 3 programs, fully run</li>
+          <li>Weekly rollups + launch readiness</li>
+          <li>Risk &amp; dependency tracking</li>
+          <li>Stakeholder comms + escalations</li>
+          <li>Tailored update voice per audience</li>
+        </ul>
+        <a class="btn" href="mailto:otto.tpm@gmail.com?subject=Otto%20booking%20request">Book a call</a>
+      </div>
+      <div class="tier">
+        <div class="kind">Ongoing</div>
+        <h3>Portfolio</h3>
+        <div class="amt">Custom</div>
+        <div class="desc">Org-wide coverage across many programs and teams.</div>
+        <ul>
+          <li>Unlimited programs</li>
+          <li>Everything in Program</li>
+          <li>Custom integrations &amp; readiness gates</li>
+          <li>Dedicated onboarding</li>
+        </ul>
+        <a class="btn ghost" href="mailto:otto.tpm@gmail.com?subject=Otto%20booking%20request">Talk to us</a>
+      </div>
+    </div>
+    <p class="note" style="text-align:center">You're hiring an outcome, not a tool. Read-only access · scoped per program · cancel anytime.</p>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final" id="book">
+  <div class="wrap">
+    <span class="eyebrow">Get started</span>
+    <h2>Stop assembling the rollup. Hire the TPM that already did.</h2>
+    <p class="lede" style="max-width:54ch;margin-inline:auto">A 20-minute call: pick one program, see Otto run it, decide on the audit.</p>
+    <a class="btn" href="mailto:otto.tpm@gmail.com?subject=Otto%20booking%20request">Book a call</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-row">
+    <div class="brand"><span class="logo"></span> Otto · the autonomous TPM</div>
+    <div>© 2026</div>
+  </div>
+</footer>
+
+</body>
+</html>

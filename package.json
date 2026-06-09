@@ -1,0 +1,16 @@
+{
+  "name": "otto",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Otto — autonomous TPM: pulls program state from Jira, analyzes it, narrates with Claude, ships a weekly rollup. Cloudflare Worker orchestrator + keyless Claude proxy.",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "rollup": "node engine/cli.mjs > rollup.html",
+    "eval": "node eval/eval.mjs",
+    "check:brand": "node scripts/check-brand.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "latest"
+  }
+}

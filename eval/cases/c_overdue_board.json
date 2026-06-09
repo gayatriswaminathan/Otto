@@ -1,0 +1,29 @@
+{
+  "name": "Overdue board — a dated item slipped past its due date",
+  "why": "Dated, prioritized, and in flight (so the absence-watermelons stay quiet), but one item is past its due date and not done. Otto must surface the per-item Overdue flag.",
+  "state": {
+    "program": "Slipping Program",
+    "source": "jira",
+    "generated_at": "2026-06-08",
+    "totals": { "by_type": { "Epic": 1, "Story": 3 }, "by_status": { "Done": 1, "In Progress": 1, "To Do": 1 }, "total": 3 },
+    "epics": [
+      {
+        "key": "SP-1",
+        "summary": "Launch workstream",
+        "status": "In Progress",
+        "children": [
+          { "key": "SP-2", "summary": "Finalize the contract", "type": "Story", "status": "In Progress", "priority": "High", "duedate": "2026-05-30" },
+          { "key": "SP-3", "summary": "Sign off legal", "type": "Story", "status": "Done", "priority": "Medium", "duedate": "2026-05-15" },
+          { "key": "SP-4", "summary": "Prep the rollout", "type": "Story", "status": "To Do", "priority": "Low", "duedate": "2026-06-30" }
+        ],
+        "child_counts": { "Done": 1, "In Progress": 1, "To Do": 1 }
+      }
+    ],
+    "orphans": [],
+    "flags": []
+  },
+  "expect": {
+    "present": ["Overdue"],
+    "absent": ["No schedule signal", "No prioritization", "Not started"]
+  }
+}

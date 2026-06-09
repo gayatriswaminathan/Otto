@@ -1,0 +1,31 @@
+{
+  "name": "f_blocked_status",
+  "why": "Items in status 'Blocked' must surface a 'Blocked items' flag. A board can look green while work is stalled — the blocked count is exactly the watermelon Otto exists to catch.",
+  "expect": ["Blocked items"],
+  "expectAbsent": [],
+  "state": {
+    "program": "Board with blocked work",
+    "source": "jira",
+    "generated_at": "2026-06-08",
+    "totals": {
+      "by_type": { "Epic": 1, "Story": 3 },
+      "by_status": { "Done": 1, "Blocked": 2 },
+      "total": 3
+    },
+    "epics": [
+      {
+        "key": "BL-1",
+        "summary": "Integration",
+        "status": "In Progress",
+        "children": [
+          { "key": "BL-10", "summary": "Auth handshake", "type": "Story", "status": "Done", "priority": "High", "duedate": "2026-06-15", "assignee": "Asha" },
+          { "key": "BL-11", "summary": "Awaiting vendor key", "type": "Story", "status": "Blocked", "priority": "High", "duedate": "2026-06-30", "assignee": "Beto" },
+          { "key": "BL-12", "summary": "Stuck on legal review", "type": "Story", "status": "Blocked", "priority": "Medium", "duedate": "2026-07-05", "assignee": "Cira" }
+        ],
+        "child_counts": { "Done": 1, "Blocked": 2 }
+      }
+    ],
+    "orphans": [],
+    "flags": []
+  }
+}

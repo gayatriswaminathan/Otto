@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Otto · Connect your program</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Geist:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* Tokens mirrored EXACTLY from otto/core/theme.mjs */
+  :root{
+    --bg:#faf6ea;--paper:#ffffff;--ink:#15140f;--muted:#6f6a5c;--line:#ece4d2;
+    --yellow:#ffcb2d;--yellow-deep:#e7ad00;--soft:#fff3cf;
+    --good:#1f8a52;--warn:#c98a16;--red:#c0341d;
+    --radius:18px;--shadow:0 1px 2px rgba(20,18,15,.04),0 14px 38px rgba(20,18,15,.07);
+    font-synthesis:none;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Geist","Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    line-height:1.5;-webkit-font-smoothing:antialiased}
+  h1,h2,h3,h4,h5,.brand{font-family:"Fraunces","Geist",serif;letter-spacing:-.02em;font-optical-sizing:auto}
+  .wrap{max-width:760px;margin:0 auto;padding:32px 22px}
+
+  /* brand mark (the sun) — reused from theme */
+  .logo{width:28px;height:28px;border-radius:50%;background:radial-gradient(circle at 50% 45%,#ffd84d,#ffb800);position:relative;box-shadow:0 0 0 4px rgba(255,203,45,.22);flex:0 0 auto}
+  .logo::after{content:"";position:absolute;inset:7px;border-radius:50%;background:#fff;opacity:.92}
+  .logo::before{content:"";position:absolute;inset:11px;border-radius:50%;background:radial-gradient(circle,#ffb800,#ff9e00)}
+  .brandrow{display:flex;align-items:center;gap:9px;margin-bottom:6px}
+  .brandrow .name{font-family:"Fraunces","Geist",serif;font-weight:700;font-size:18px;letter-spacing:-.01em;color:var(--ink)}
+  .brandrow .sub{color:var(--muted);font-size:12.5px;font-weight:600}
+  .tag{color:var(--muted);font-size:13.5px;margin-bottom:22px}
+
+  /* onboarding card */
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+  .bar{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line)}
+  .bar b{font-size:14px;font-family:"Fraunces","Geist",serif}
+  .ex{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#7a5c00;background:var(--soft);border:1px solid #f3df9e;padding:4px 10px;border-radius:999px}
+  .body{padding:22px}
+  h1{font-size:22px;letter-spacing:-.02em;margin:0 0 4px}
+  .lede{color:var(--muted);font-size:13.5px;margin:0 0 20px}
+
+  .sec{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin:0 0 9px}
+  .group{margin-bottom:22px}
+
+  /* source picker */
+  .sources{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  @media(max-width:560px){.sources{grid-template-columns:repeat(2,1fr)}}
+  .src{position:relative;display:flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:12px;padding:11px 12px;cursor:pointer;background:var(--bg);transition:border-color .12s,background .12s}
+  .src:hover{border-color:#d9cfb6}
+  .src input{position:absolute;opacity:0;width:0;height:0}
+  .src .dot{width:18px;height:18px;border-radius:6px;border:1.5px solid #cdc4ad;flex:0 0 auto;display:grid;place-items:center;background:var(--paper)}
+  .src .dot::after{content:"";width:9px;height:9px;border-radius:3px;background:var(--yellow-deep);transform:scale(0);transition:transform .12s}
+  .src input:checked ~ .dot{border-color:var(--yellow-deep)}
+  .src input:checked ~ .dot::after{transform:scale(1)}
+  .src:has(input:checked){border-color:var(--yellow-deep);background:var(--soft)}
+  .src .nm{font-size:13.5px;font-weight:600}
+  .src input:focus-visible ~ .dot{outline:2px solid var(--yellow);outline-offset:2px}
+
+  /* config inputs */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:560px){.grid{grid-template-columns:1fr}}
+  .field label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:5px;font-weight:700}
+  input[type=text]{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);font-size:14px;color:var(--ink);font-family:inherit}
+  input[type=text]:focus{outline:2px solid var(--yellow);outline-offset:1px}
+  input::placeholder{color:#b6ad97}
+
+  /* cadence segmented control */
+  .cadence{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+  .cadence label{padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);border-left:1px solid var(--line)}
+  .cadence label:first-child{border-left:none}
+  .cadence input{position:absolute;opacity:0;width:0;height:0}
+  .cadence label:has(input:checked){background:var(--yellow);color:#3a2e00;font-weight:800}
+  .cadence label:has(input:focus-visible){outline:2px solid var(--yellow-deep);outline-offset:-2px}
+
+  .lock{display:flex;gap:8px;align-items:flex-start;background:var(--bg);border:1px solid var(--line);border-left:3px solid var(--good);border-radius:10px;padding:10px 13px;font-size:12.5px;color:var(--muted);margin-top:12px}
+  .lock b{color:var(--ink);font-weight:700}
+
+  button.primary{width:100%;padding:12px 18px;border:none;border-radius:12px;background:var(--yellow);color:#3a2e00;font-weight:800;font-size:15px;cursor:pointer;font-family:inherit}
+  button.primary:hover{background:var(--yellow-deep)}
+  button.primary:disabled{opacity:.55;cursor:wait}
+
+  /* "what Otto will do" reassurance */
+  .promise{background:var(--soft);border:1px solid #f3df9e;border-radius:12px;padding:13px 15px;margin-top:16px}
+  .promise .h{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#7a5c00;font-weight:800;margin-bottom:6px}
+  .promise ul{margin:0;padding-left:18px;font-size:13px;color:#7a5c00}
+  .promise li{margin:3px 0}
+
+  /* step 2 */
+  .backlink{display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--yellow-deep);font-weight:700;font-size:13.5px;cursor:pointer;padding:0;margin-bottom:14px;font-family:inherit}
+  .backlink:hover{text-decoration:underline}
+  .resultframe{width:100%;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper);box-shadow:var(--shadow);display:block}
+
+  .note{padding:14px 16px;border-radius:12px;font-size:13.5px;margin:0}
+  .note.warn{background:#fff4e5;border:1px solid #f0b429;color:#7a5200}
+  .note.err{background:#fdeae6;border:1px solid #e3a89c;color:#8a2616}
+  .note code{background:rgba(0,0,0,.05);padding:1px 5px;border-radius:5px}
+  .loading{display:flex;align-items:center;gap:12px;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;color:var(--muted);font-size:14px}
+  .spin{width:20px;height:20px;border-radius:50%;border:2.5px solid var(--soft);border-top-color:var(--yellow-deep);animation:spin .7s linear infinite;flex:0 0 auto}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .foothint{color:var(--muted);font-size:11.5px;text-align:center;margin-top:18px}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav style="display:flex;gap:18px;flex-wrap:wrap;font-size:13.5px;font-weight:600;color:var(--muted);margin-bottom:20px">
+    <a href="/" style="color:var(--yellow-deep);font-weight:700">← Otto home</a>
+    <a href="/architecture.html">Architecture</a>
+    <a href="/rollup" target="_blank" rel="noopener">Live rollup</a>
+  </nav>
+
+  <!-- header: sun logo + wordmark (reused .logo/.brandrow) -->
+  <div class="brandrow">
+    <div class="logo" aria-hidden="true"></div>
+    <span class="name">Otto</span>
+    <span class="sub">the autonomous TPM</span>
+  </div>
+  <div class="tag">Honest program status, built from your live board — not a hopeful guess.</div>
+
+  <!-- STEP 1 — onboarding -->
+  <section id="step1">
+    <div class="card">
+      <div class="bar"><b>Connect your program</b><span class="ex">Step 1 of 2</span></div>
+      <div class="body">
+        <h1>Point Otto at your program</h1>
+        <p class="lede">Pick where your work lives. Otto reads it read-only, then writes you an honest rollup.</p>
+
+        <div class="group">
+          <div class="sec">Sources</div>
+          <div class="sources" id="sources">
+            <label class="src"><input type="checkbox" value="jira" checked /><span class="dot"></span><span class="nm">Jira</span></label>
+            <label class="src"><input type="checkbox" value="linear" /><span class="dot"></span><span class="nm">Linear</span></label>
+            <label class="src"><input type="checkbox" value="github" /><span class="dot"></span><span class="nm">GitHub</span></label>
+            <label class="src"><input type="checkbox" value="slack" /><span class="dot"></span><span class="nm">Slack</span></label>
+            <label class="src"><input type="checkbox" value="confluence" /><span class="dot"></span><span class="nm">Confluence</span></label>
+            <label class="src"><input type="checkbox" value="notion" /><span class="dot"></span><span class="nm">Notion</span></label>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="sec">Configuration</div>
+          <div class="grid">
+            <div class="field">
+              <label for="project">Project / board key</label>
+              <input type="text" id="project" value="KAN" autocomplete="off" spellcheck="false" />
+            </div>
+            <div class="field">
+              <label for="channel">Slack channel <span style="text-transform:none;font-weight:600">(optional)</span></label>
+              <input type="text" id="channel" placeholder="#launch-control" autocomplete="off" spellcheck="false" />
+            </div>
+            <div class="field">
+              <label for="owner">GitHub owner <span style="text-transform:none;font-weight:600">(optional)</span></label>
+              <input type="text" id="owner" placeholder="acme" autocomplete="off" spellcheck="false" />
+            </div>
+            <div class="field">
+              <label for="repo">GitHub repo <span style="text-transform:none;font-weight:600">(optional)</span></label>
+              <input type="text" id="repo" placeholder="platform" autocomplete="off" spellcheck="false" />
+            </div>
+          </div>
+          <div class="lock">
+            <span aria-hidden="true">🔒</span>
+            <span><b>Read-only.</b> Secure credentials are configured server-side — never entered here.</span>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="sec">Cadence</div>
+          <div class="cadence" id="cadence" role="radiogroup" aria-label="Rollup cadence">
+            <label><input type="radio" name="cadence" value="weekly" checked />Weekly</label>
+            <label><input type="radio" name="cadence" value="biweekly" />Bi-weekly</label>
+            <label><input type="radio" name="cadence" value="monthly" />Monthly</label>
+            <label><input type="radio" name="cadence" value="quarterly" />Quarterly</label>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="sec">Worker</div>
+          <div class="field">
+            <label for="base">Worker base URL</label>
+            <input type="text" id="base" value="" placeholder="same-origin (e.g. http://localhost:8787)" autocomplete="off" spellcheck="false" />
+          </div>
+        </div>
+
+        <button class="primary" id="go">Generate rollup →</button>
+
+        <div class="promise">
+          <div class="h">What Otto will do</div>
+          <ul>
+            <li>Read your board <b>read-only</b> — no edits, no noise.</li>
+            <li>Build the rollup from real program state, every cadence.</li>
+            <li>Flag the risks and watermelons hiding behind green.</li>
+            <li>Escalate the calls that actually need <b>you</b>.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 2 — result -->
+  <section id="step2" class="hidden">
+    <button class="backlink" id="back">← Start over / edit connection</button>
+    <div id="out"></div>
+  </section>
+
+  <div class="foothint">Otto · deterministic core (no LLM) + Claude prose · data via the Cloudflare Worker.</div>
+</div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  const step1 = $("step1"), step2 = $("step2"), out = $("out"), btn = $("go");
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
+
+  function selectedSources() {
+    return [...document.querySelectorAll("#sources input:checked")].map((i) => i.value);
+  }
+  function cadence() {
+    return (document.querySelector('input[name="cadence"]:checked') || {}).value || "weekly";
+  }
+
+  function buildUrl() {
+    const base = $("base").value.trim().replace(/\/+$/, "");
+    const sources = selectedSources();
+    const p = new URLSearchParams();
+    p.set("sources", sources.join(",") || "jira");
+    p.set("project", $("project").value.trim() || "KAN");
+    p.set("cadence", cadence());
+    p.set("channel", $("channel").value.trim());
+    p.set("owner", $("owner").value.trim());
+    p.set("repo", $("repo").value.trim());
+    return `${base}/rollup?${p.toString()}`;
+  }
+
+  function showResult(html) {
+    // Render the Worker's HTML in a sandboxed srcdoc iframe so its styles
+    // never clash with this onboarding page. It already ships the full theme.
+    const frame = document.createElement("iframe");
+    frame.className = "resultframe";
+    frame.setAttribute("title", "Otto program rollup");
+    frame.setAttribute("sandbox", "allow-popups allow-popups-to-escape-sandbox");
+    frame.srcdoc = html;
+    out.innerHTML = "";
+    out.appendChild(frame);
+    // auto-size the iframe to its content
+    frame.addEventListener("load", () => {
+      try {
+        const h = frame.contentDocument.documentElement.scrollHeight;
+        if (h) frame.style.height = (h + 8) + "px";
+      } catch (_) { frame.style.height = "1200px"; }
+    });
+  }
+
+  async function generate() {
+    const url = buildUrl();
+    step1.classList.add("hidden");
+    step2.classList.remove("hidden");
+    out.innerHTML = `<div class="loading"><span class="spin"></span>
+      <div>Otto is reading your board and writing the honest status…</div></div>`;
+    btn.disabled = true;
+    try {
+      const res = await fetch(url, { headers: { Accept: "text/html" } });
+      if (!res.ok) {
+        out.innerHTML = `<div class="note err"><strong>Otto returned ${res.status}.</strong>
+          Check your source selection / project key, and that the Worker route
+          <code>/rollup</code> is deployed. Tried <code>${esc(url)}</code>.</div>`;
+        return;
+      }
+      const html = await res.text();
+      showResult(html);
+    } catch (err) {
+      out.innerHTML = `<div class="note err"><strong>Couldn't reach the Worker.</strong><br>
+        Tried <code>${esc(url)}</code>. Start it locally with <code>npm run dev</code> in
+        <code>otto/</code> (defaults to <code>http://localhost:8787</code>) and put that in the
+        base URL field — it falls back to demo data automatically. Or deploy it with
+        <code>npm run deploy</code>.</div>`;
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  function startOver() {
+    step2.classList.add("hidden");
+    step1.classList.remove("hidden");
+    out.innerHTML = "";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  btn.addEventListener("click", generate);
+  $("back").addEventListener("click", startOver);
+  // Enter inside any text field submits.
+  document.querySelectorAll('#step1 input[type=text]').forEach((el) =>
+    el.addEventListener("keydown", (e) => { if (e.key === "Enter") generate(); }));
+</script>
+</body>
+</html>

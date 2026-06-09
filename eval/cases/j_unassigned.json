@@ -1,0 +1,32 @@
+{
+  "name": "j_unassigned",
+  "why": "More than half of items have no assignee (assigned/total < 0.5). 'Unassigned work' must fire — green status on work no one owns is a watermelon.",
+  "expect": ["Unassigned work"],
+  "expectAbsent": [],
+  "state": {
+    "program": "Mostly unassigned",
+    "source": "jira",
+    "generated_at": "2026-06-08",
+    "totals": {
+      "by_type": { "Epic": 1, "Story": 4 },
+      "by_status": { "In Progress": 1, "To Do": 3 },
+      "total": 4
+    },
+    "epics": [
+      {
+        "key": "UN-1",
+        "summary": "Backlog",
+        "status": "In Progress",
+        "children": [
+          { "key": "UN-10", "summary": "Owned work", "type": "Story", "status": "In Progress", "priority": "High", "duedate": "2026-06-20", "assignee": "Asha" },
+          { "key": "UN-11", "summary": "No owner A", "type": "Story", "status": "To Do", "priority": "Medium", "duedate": "2026-06-21", "assignee": null },
+          { "key": "UN-12", "summary": "No owner B", "type": "Story", "status": "To Do", "priority": "Medium", "duedate": "2026-06-22", "assignee": null },
+          { "key": "UN-13", "summary": "No owner C", "type": "Story", "status": "To Do", "priority": "Medium", "duedate": "2026-06-23", "assignee": "" }
+        ],
+        "child_counts": { "In Progress": 1, "To Do": 3 }
+      }
+    ],
+    "orphans": [],
+    "flags": []
+  }
+}

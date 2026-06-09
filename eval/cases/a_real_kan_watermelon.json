@@ -1,0 +1,38 @@
+{
+  "name": "Real KAN board — fully scoped, never started (the watermelon)",
+  "why": "The actual GS Space board: 28 issues, all To Do, no due dates, every story Medium. Looks like a tidy plan; Otto must call out that it is unverifiable and not in flight.",
+  "state": {
+    "program": "GS Space (KAN)",
+    "source": "jira",
+    "generated_at": "2026-06-08",
+    "totals": { "by_type": { "Epic": 2, "Story": 4 }, "by_status": { "To Do": 4 }, "total": 4 },
+    "epics": [
+      {
+        "key": "KAN-4",
+        "summary": "A — One front door (intake capture)",
+        "status": "To Do",
+        "children": [
+          { "key": "KAN-10", "summary": "A1 — Submit an ask through a single intake form", "type": "Story", "status": "To Do", "priority": "Medium", "duedate": null },
+          { "key": "KAN-11", "summary": "A2 — Capture an ask from Slack", "type": "Story", "status": "To Do", "priority": "Medium", "duedate": null }
+        ],
+        "child_counts": { "To Do": 2 }
+      },
+      {
+        "key": "KAN-27",
+        "summary": "G — Foundation (infra & eval)",
+        "status": "To Do",
+        "children": [
+          { "key": "KAN-28", "summary": "G1 — Cloudflare Worker + Claude proxy (keyless)", "type": "Story", "status": "To Do", "priority": "Medium", "duedate": null },
+          { "key": "KAN-31", "summary": "G4 — Eval harness in CI", "type": "Story", "status": "To Do", "priority": "Medium", "duedate": null }
+        ],
+        "child_counts": { "To Do": 2 }
+      }
+    ],
+    "orphans": [],
+    "flags": []
+  },
+  "expect": {
+    "present": ["No schedule signal", "Uniform priority", "Not started", "Unassigned work"],
+    "absent": ["No prioritization"]
+  }
+}

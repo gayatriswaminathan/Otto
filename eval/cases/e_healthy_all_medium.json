@@ -1,0 +1,32 @@
+{
+  "name": "e_healthy_all_medium",
+  "why": "Dated, assigned, real momentum, every priority 'Medium'. Proves the all-Medium board does NOT trip 'No prioritization' (that flag fires ONLY when every priority is null/unset). All-Medium is an info note, not a watermelon.",
+  "expect": [],
+  "expectAbsent": ["No prioritization", "No schedule signal", "Not started", "Unassigned work"],
+  "state": {
+    "program": "Healthy all-Medium board",
+    "source": "jira",
+    "generated_at": "2026-06-08",
+    "totals": {
+      "by_type": { "Epic": 1, "Story": 4 },
+      "by_status": { "Done": 2, "In Progress": 2 },
+      "total": 4
+    },
+    "epics": [
+      {
+        "key": "HM-1",
+        "summary": "Delivery",
+        "status": "In Progress",
+        "children": [
+          { "key": "HM-10", "summary": "Ship onboarding", "type": "Story", "status": "Done", "priority": "Medium", "duedate": "2026-06-20", "assignee": "Asha" },
+          { "key": "HM-11", "summary": "Wire telemetry", "type": "Story", "status": "Done", "priority": "Medium", "duedate": "2026-06-22", "assignee": "Beto" },
+          { "key": "HM-12", "summary": "Build settings", "type": "Story", "status": "In Progress", "priority": "Medium", "duedate": "2026-06-25", "assignee": "Cira" },
+          { "key": "HM-13", "summary": "QA pass", "type": "Story", "status": "In Progress", "priority": "Medium", "duedate": "2026-06-28", "assignee": "Dev" }
+        ],
+        "child_counts": { "Done": 2, "In Progress": 2 }
+      }
+    ],
+    "orphans": [],
+    "flags": []
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "g_due_today_not_overdue",
+  "why": "An item due exactly today (2026-06-08, parsed as LOCAL midnight) and not done is NOT overdue. Guards the off-by-one where UTC parsing makes 'due today' read as already past.",
+  "expect": [],
+  "expectAbsent": ["Overdue · "],
+  "state": {
+    "program": "Due exactly today",
+    "source": "jira",
+    "generated_at": "2026-06-08",
+    "totals": {
+      "by_type": { "Epic": 1, "Story": 2 },
+      "by_status": { "Done": 1, "In Progress": 1 },
+      "total": 2
+    },
+    "epics": [
+      {
+        "key": "DT-1",
+        "summary": "Launch",
+        "status": "In Progress",
+        "children": [
+          { "key": "DT-10", "summary": "Cut release branch", "type": "Story", "status": "Done", "priority": "High", "duedate": "2026-06-05", "assignee": "Asha" },
+          { "key": "DT-11", "summary": "Ship to TestFlight", "type": "Story", "status": "In Progress", "priority": "High", "duedate": "2026-06-08", "assignee": "Beto" }
+        ],
+        "child_counts": { "Done": 1, "In Progress": 1 }
+      }
+    ],
+    "orphans": [],
+    "flags": []
+  }
+}

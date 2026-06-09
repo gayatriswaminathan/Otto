@@ -1,0 +1,11 @@
+# Copy to .dev.vars (gitignored) and fill in real values for local `wrangler dev`.
+# These are placeholders — do NOT commit real secrets.
+
+# Jira Cloud REST v3
+JIRA_BASE_URL="https://your-domain.atlassian.net"
+JIRA_CLOUD_ID="00000000-0000-0000-0000-000000000000"
+# Basic-auth token, base64 of "email:api_token" (or a PAT per the connector).
+JIRA_TOKEN="your-jira-api-token-or-base64-credential"
+
+# Anthropic — stays inside the Worker; never exposed to the browser.
+ANTHROPIC_API_KEY="sk-ant-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"

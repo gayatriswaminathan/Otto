@@ -1,0 +1,97 @@
+{
+  "program": "Payments Platform v2",
+  "source": "jira+slack+confluence",
+  "generated_at": "2026-06-08",
+  "totals": {
+    "by_type": {
+      "Epic": 4,
+      "Story": 13
+    },
+    "by_status": {
+      "Done": 3,
+      "In Progress": 7,
+      "Blocked": 1,
+      "To Do": 6
+    },
+    "total": 17
+  },
+  "epics": [
+    {
+      "key": "PAY-1",
+      "summary": "A — Foundation & infrastructure",
+      "status": "In Progress",
+      "children": [
+        { "key": "PAY-10", "summary": "A1 — Provision payments service & CI pipeline", "type": "Story", "status": "Done", "priority": "High", "duedate": "2026-05-20", "assignee": "Priya Nair", "links": [ { "type": "blocks", "key": "PAY-13" } ] },
+        { "key": "PAY-11", "summary": "A2 — Vault & key management for card data", "type": "Story", "status": "In Progress", "priority": "High", "duedate": "2026-06-12", "assignee": "Marcus Webb", "links": [ { "type": "blocks", "key": "PAY-14" } ] },
+        { "key": "PAY-12", "summary": "A3 — Observability & alerting baseline", "type": "Story", "status": "Done", "priority": "Medium", "duedate": "2026-05-28", "assignee": "Priya Nair" }
+      ],
+      "child_counts": { "Done": 2, "In Progress": 1 }
+    },
+    {
+      "key": "PAY-2",
+      "summary": "B — Card processing",
+      "status": "In Progress",
+      "children": [
+        { "key": "PAY-13", "summary": "B1 — Authorize & capture via processor SDK", "type": "Story", "status": "In Progress", "priority": "High", "duedate": "2026-06-18", "assignee": "Dana Okafor", "links": [ { "type": "is blocked by", "key": "PAY-10" }, { "type": "blocks", "key": "PAY-17" } ] },
+        { "key": "PAY-14", "summary": "B2 — Tokenized card vault integration", "type": "Story", "status": "Blocked", "priority": "High", "duedate": "2026-06-10", "assignee": "Dana Okafor", "links": [ { "type": "is blocked by", "key": "PAY-11" } ] },
+        { "key": "PAY-15", "summary": "B3 — 3-D Secure challenge flow", "type": "Story", "status": "To Do", "priority": "Medium", "duedate": "2026-06-25", "assignee": "Leo Tan" },
+        { "key": "PAY-16", "summary": "B4 — Retry & idempotency for failed charges", "type": "Story", "status": "To Do", "priority": "Low", "duedate": "2026-07-02", "assignee": null }
+      ],
+      "child_counts": { "In Progress": 1, "Blocked": 1, "To Do": 2 }
+    },
+    {
+      "key": "PAY-3",
+      "summary": "C — Payouts & ledger",
+      "status": "In Progress",
+      "children": [
+        { "key": "PAY-17", "summary": "C1 — Double-entry ledger service", "type": "Story", "status": "In Progress", "priority": "High", "duedate": "2026-06-30", "assignee": "Sofia Reyes", "links": [ { "type": "is blocked by", "key": "PAY-13" }, { "type": "blocks", "key": "PAY-20" } ] },
+        { "key": "PAY-18", "summary": "C2 — Scheduled bank payouts (ACH/SEPA)", "type": "Story", "status": "To Do", "priority": "Medium", "duedate": "2026-07-10", "assignee": "Sofia Reyes", "links": [ { "type": "depends on", "key": "PAY-17" } ] },
+        { "key": "PAY-19", "summary": "C3 — Reconciliation report export", "type": "Story", "status": "Done", "priority": "Low", "duedate": "2026-05-30", "assignee": "Marcus Webb" }
+      ],
+      "child_counts": { "In Progress": 1, "To Do": 1, "Done": 1 }
+    },
+    {
+      "key": "PAY-4",
+      "summary": "D — Compliance & launch",
+      "status": "To Do",
+      "children": [
+        { "key": "PAY-20", "summary": "D1 — PCI-DSS attestation & audit pack", "type": "Story", "status": "To Do", "priority": "High", "duedate": "2026-06-05", "assignee": "Hannah Cole", "links": [ { "type": "is blocked by", "key": "PAY-17" } ] },
+        { "key": "PAY-21", "summary": "D2 — Fraud monitoring & velocity rules", "type": "Story", "status": "In Progress", "priority": "Medium", "duedate": "2026-06-22", "assignee": "Leo Tan" },
+        { "key": "PAY-22", "summary": "D3 — Go-live runbook & rollback plan", "type": "Story", "status": "To Do", "priority": "Medium", "duedate": "2026-07-15", "assignee": null }
+      ],
+      "child_counts": { "To Do": 2, "In Progress": 1 }
+    }
+  ],
+  "orphans": [],
+  "signals": [
+    {
+      "source": "slack",
+      "type": "blocker",
+      "text": "PAY-14 is hard-blocked: the card vault can't tokenize until A2 key management ships. Vendor HSM access still pending from security.",
+      "ref": "slack://channel?id=C0PAYMENTS&message=1717804800.000100",
+      "ts": "2026-06-07"
+    },
+    {
+      "source": "confluence",
+      "type": "risk",
+      "text": "PCI-DSS attestation (PAY-20) is the long pole and is now overdue — the auditor needs the ledger evidence from C1 before sign-off, putting the launch date at risk.",
+      "ref": "https://acme.atlassian.net/wiki/spaces/PAY/pages/884736/Launch+Readiness",
+      "ts": "2026-06-08"
+    },
+    {
+      "source": "slack",
+      "type": "decision",
+      "text": "Decision: we're moving 3-D Secure (PAY-15) into the launch scope after legal flagged SCA requirements for EU cards.",
+      "ref": "slack://channel?id=C0PAYMENTS&message=1717632000.000300",
+      "ts": "2026-06-05"
+    },
+    {
+      "source": "confluence",
+      "type": "note",
+      "text": "Reconciliation export (C3) shipped early and is already in use by finance for the May close.",
+      "ref": "https://acme.atlassian.net/wiki/spaces/PAY/pages/884512/Ledger+Notes",
+      "ts": "2026-06-03"
+    }
+  ],
+  "flags": []
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Healthy board — dated, prioritized, in flight",
+  "why": "Due dates set, mixed priorities, real momentum (Done + In Progress), nothing overdue. None of the watermelon flags should fire — this is what an honestly-green program looks like.",
+  "state": {
+    "program": "Healthy Program",
+    "source": "jira",
+    "generated_at": "2026-06-08",
+    "totals": { "by_type": { "Epic": 1, "Story": 4 }, "by_status": { "Done": 1, "In Progress": 1, "To Do": 2 }, "total": 4 },
+    "epics": [
+      {
+        "key": "HP-1",
+        "summary": "Core delivery",
+        "status": "In Progress",
+        "children": [
+          { "key": "HP-2", "summary": "Ship the API", "type": "Story", "status": "Done", "priority": "High", "duedate": "2026-06-20" },
+          { "key": "HP-3", "summary": "Wire the client", "type": "Story", "status": "In Progress", "priority": "Medium", "duedate": "2026-06-25" },
+          { "key": "HP-4", "summary": "Add telemetry", "type": "Story", "status": "To Do", "priority": "Low", "duedate": "2026-07-01" },
+          { "key": "HP-5", "summary": "Write the docs", "type": "Story", "status": "To Do", "priority": "Medium", "duedate": "2026-07-05" }
+        ],
+        "child_counts": { "Done": 1, "In Progress": 1, "To Do": 2 }
+      }
+    ],
+    "orphans": [],
+    "flags": []
+  },
+  "expect": {
+    "present": [],
+    "absent": ["No schedule signal", "No prioritization", "Not started", "Overdue"]
+  }
+}

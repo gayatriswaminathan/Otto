@@ -1,0 +1,31 @@
+{
+  "name": "i_partial_dates",
+  "why": "Some items have due dates, some don't. 'No schedule signal' fires ONLY when zero items are dated. With dated>0 the engine must stay quiet — partial coverage is not the same as no coverage.",
+  "expect": [],
+  "expectAbsent": ["No schedule signal"],
+  "state": {
+    "program": "Partial date coverage",
+    "source": "jira",
+    "generated_at": "2026-06-08",
+    "totals": {
+      "by_type": { "Epic": 1, "Story": 3 },
+      "by_status": { "Done": 1, "In Progress": 2 },
+      "total": 3
+    },
+    "epics": [
+      {
+        "key": "PD-1",
+        "summary": "Roadmap",
+        "status": "In Progress",
+        "children": [
+          { "key": "PD-10", "summary": "Spec drafted", "type": "Story", "status": "Done", "priority": "High", "duedate": "2026-06-12", "assignee": "Asha" },
+          { "key": "PD-11", "summary": "Build started", "type": "Story", "status": "In Progress", "priority": "Medium", "duedate": null, "assignee": "Beto" },
+          { "key": "PD-12", "summary": "Design review", "type": "Story", "status": "In Progress", "priority": "Low", "duedate": null, "assignee": "Cira" }
+        ],
+        "child_counts": { "Done": 1, "In Progress": 2 }
+      }
+    ],
+    "orphans": [],
+    "flags": []
+  }
+}

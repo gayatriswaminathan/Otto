@@ -1,0 +1,29 @@
+{
+  "name": "Single-priority, started, dated board",
+  "why": "Work is in flight and every item has a due date, so 'Not started' and 'No schedule signal' stay quiet. But every item shares one priority — Otto must still flag that nothing is sequenced.",
+  "state": {
+    "program": "Flat Priority Program",
+    "source": "jira",
+    "generated_at": "2026-06-08",
+    "totals": { "by_type": { "Epic": 1, "Story": 3 }, "by_status": { "In Progress": 1, "To Do": 2 }, "total": 3 },
+    "epics": [
+      {
+        "key": "FP-1",
+        "summary": "Build phase",
+        "status": "In Progress",
+        "children": [
+          { "key": "FP-2", "summary": "Set up the repo", "type": "Story", "status": "In Progress", "priority": "Medium", "duedate": "2026-06-20" },
+          { "key": "FP-3", "summary": "Add the pipeline", "type": "Story", "status": "To Do", "priority": "Medium", "duedate": "2026-06-22" },
+          { "key": "FP-4", "summary": "Cut a release", "type": "Story", "status": "To Do", "priority": "Medium", "duedate": "2026-06-28" }
+        ],
+        "child_counts": { "In Progress": 1, "To Do": 2 }
+      }
+    ],
+    "orphans": [],
+    "flags": []
+  },
+  "expect": {
+    "present": ["Uniform priority", "Unassigned work"],
+    "absent": ["No prioritization", "No schedule signal", "Not started", "Overdue"]
+  }
+}

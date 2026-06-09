@@ -1,0 +1,20 @@
+{
+  "name": "h_empty_board",
+  "why": "Zero epics and zero children. The engine must emit 'Empty board' and report readiness as null (no items = no percentage), never a fabricated 0% that reads as 'on track but nothing done'.",
+  "expect": ["Empty board"],
+  "expectAbsent": [],
+  "expectReadinessNull": true,
+  "state": {
+    "program": "Empty board",
+    "source": "jira",
+    "generated_at": "2026-06-08",
+    "totals": {
+      "by_type": {},
+      "by_status": {},
+      "total": 0
+    },
+    "epics": [],
+    "orphans": [],
+    "flags": []
+  }
+}

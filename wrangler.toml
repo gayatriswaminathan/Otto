@@ -1,0 +1,49 @@
+name = "otto"
+main = "worker/index.mjs"
+compatibility_date = "2025-05-01"
+compatibility_flags = ["nodejs_compat"]
+account_id = "5e95326ff7bcf2321e9edd6700fc413f"
+
+# ---------------------------------------------------------------------------
+# Secrets — set these once per environment (they never live in source):
+#   Core:    wrangler secret put ANTHROPIC_API_KEY
+#   Jira:    JIRA_TOKEN · JIRA_BASE_URL · JIRA_CLOUD_ID
+#   Linear:  LINEAR_TOKEN  (+ optional LINEAR_TEAM)
+#   GitHub:  GITHUB_TOKEN · GITHUB_OWNER · GITHUB_REPO
+#   Slack:   SLACK_TOKEN · SLACK_CHANNEL
+#   Conflu:  CONFLUENCE_TOKEN · CONFLUENCE_SPACE  (reuses JIRA_BASE_URL/CLOUD_ID)
+#   Notion:  NOTION_TOKEN · NOTION_DATABASE_ID
+#   Security: OTTO_ACCESS_TOKEN (gates data routes) · ALLOWED_ORIGINS (CORS allow-list, comma-sep)
+#   Delivery: SLACK_WEBHOOK_URL · REPORT_EMAIL_WEBHOOK
+# Any source with missing secrets falls back to bundled fixture data (demo mode).
+# For local dev, put the same keys in .dev.vars (gitignored).
+# ---------------------------------------------------------------------------
+
+# Reporting cadence — Otto supports weekly / bi-weekly / monthly / quarterly.
+# The active trigger below is WEEKLY. To switch cadence, set OTTO_CADENCE to the
+# matching value AND replace the cron with the one from this table so the
+# scheduled run and the delta look-back stay in sync (see core/cadence.mjs):
+#   weekly     OTTO_CADENCE=weekly     crons = ["0 14 * * 1"]        # Mondays 14:00 UTC
+#   biweekly   OTTO_CADENCE=biweekly   crons = ["0 14 1,15 * *"]     # 1st & 15th
+#   monthly    OTTO_CADENCE=monthly    crons = ["0 14 1 * *"]        # 1st of month
+#   quarterly  OTTO_CADENCE=quarterly  crons = ["0 14 1 1,4,7,10 *"] # Jan/Apr/Jul/Oct 1st
+# Ad-hoc runs can override per-request with ?cadence=… on /rollup and /rollup.json.
+# Static frontend — serve the web/ folder. The onboarding app is served at "/"
+# and calls this same Worker's /rollup (same origin). API routes (/rollup, /reports,
+# /health, …) have no matching file, so they fall through to the Worker script.
+[assets]
+directory = "./web"
+
+[triggers]
+crons = ["0 14 * * 1"]
+
+# D1 database — snapshots, rollups, decisions (see db/schema.sql).
+# Create it once, then paste the printed database_id below:
+#   wrangler d1 create otto
+[[d1_databases]]
+binding = "DB"
+database_name = "otto"
+database_id = "a71e353e-d43e-4571-8131-ca70db7d1be4"
+
+[observability]
+enabled = true
