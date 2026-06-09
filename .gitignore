@@ -5,8 +5,7 @@ node_modules/
 dist/
 
 # generated output + local noise (don't commit these either)
-rollup.html
-rollup-*.html
+rollup*.html
 *.local.html
 cli_err.txt
 *.log
